@@ -202,14 +202,20 @@ void main() {
     while ((c = getchar()) != '\n') {
         if (c == '.') {
             // 输入了两个小数点
-            if (num2DecimalMark != 0) {
+            if (num2DecimalMark != 0 || lenth == 0) {
                 printf("Input Error!\n");
                 system("pause");
 		        exit(0);
             } else {
                 num2DecimalMark = lenth;
             }
-        } else {
+        } 
+		else if (c-'0'<0 || c-'0'>10) {
+			printf("Input Error!\n");
+            system("pause");
+		    exit(0);
+		}
+		else {
             num2[lenth] = c;
             lenth ++;
         }
