@@ -4,8 +4,8 @@
 #include <malloc.h>
 #define MAXNUMLEN 100000
 
-char *normalizar(char *valor) {
-	//cortando zeros a esquerda;
+char *sub0(char *valor) {
+	//去除开头多余的0;
 	int i;
 
 	for(i=0;*(valor+i)=='0';i++);
@@ -15,73 +15,73 @@ char *normalizar(char *valor) {
 
 
 char *multiEach(char n1, char n2, char n3) {
-	static char saida[2];
+	static char res[2];
 	int ir;
 
 	ir = ((n1 - '0') * (n2 - '0')) + (n3 - '0');
 
 	if(ir > 9) {
-		saida[1] = (ir % 10) + '0';
-		saida[0] = (ir / 10) + '0';
+		res[1] = (ir % 10) + '0';
+		res[0] = (ir / 10) + '0';
 	}else{
-		saida[1] = ir + '0';
-		saida[0] = '0';
+		res[1] = ir + '0';
+		res[0] = '0';
 	}
-	//saida é um array de dois elementos, ex: valor = 12, saida = {'1','2'}
-	return saida;
+	//res é um array de dois elementos, ex: valor = 12, res = {'1','2'}
+	return res;
 }
 
 char *somaEach(char n1, char n2, char n3) {
-	static char saida[2];
+	static char res[2];
 	int ir;
 
 	ir = (n1 - '0') + (n2 - '0') + (n3 - '0');
 
 	if(ir > 9) {
-		saida[1] = (ir % 10) + '0';
-		saida[0] = (ir / 10) + '0';
+		res[1] = (ir % 10) + '0';
+		res[0] = (ir / 10) + '0';
 	}else{
-		saida[1] = ir + '0';
-		saida[0] = '0';
+		res[1] = ir + '0';
+		res[0] = '0';
 	}
-	//saida é um array de dois elementos, ex: valor = 12, saida = {'1','2'}
-	return saida;
+	//res é um array de dois elementos, ex: valor = 12, res = {'1','2'}
+	return res;
 }
 
-char *somai(char *num1, char *num2) {
-	int tamanhoMaximo,indexSaida,indexN1,indexN2;
+char *add(char *num1, char *num2) {
+	int totalLenMax,indexres,indexN1,indexN2;
 	int lenNum1 = strlen(num1);
 	int lenNum2 = strlen(num2);
 	char *soma, *somapedaco;
 
 	if(lenNum1 > lenNum2) {
-		tamanhoMaximo = lenNum1+2;
+		totalLenMax = lenNum1+2;
 	}else{
-		tamanhoMaximo = lenNum2+2;
+		totalLenMax = lenNum2+2;
 	}
-	soma  = (char *) malloc((tamanhoMaximo) * sizeof(char));
-	memset(soma,'0',(tamanhoMaximo) * sizeof(char));
-	*(soma+tamanhoMaximo-1) = '\0';
+	soma  = (char *) malloc((totalLenMax) * sizeof(char));
+	memset(soma,'0',(totalLenMax) * sizeof(char));
+	*(soma+totalLenMax-1) = '\0';
 
-	indexSaida = tamanhoMaximo-2;
+	indexres = totalLenMax-2;
 	indexN1 = lenNum1 -1;
 	indexN2 = lenNum2 -1;
 
-	for(;indexSaida >= 0;indexSaida--,indexN1--,indexN2--) {
+	for(;indexres >= 0;indexres--,indexN1--,indexN2--) {
 		if(indexN1 >= 0 && indexN2 >= 0) {
-			somapedaco = somaEach(*(num1+indexN1),*(num2+indexN2),*(soma+indexSaida));
-			*(soma+indexSaida) = somapedaco[1];
-			*(soma+indexSaida-1) = somapedaco[0];
+			somapedaco = somaEach(*(num1+indexN1),*(num2+indexN2),*(soma+indexres));
+			*(soma+indexres) = somapedaco[1];
+			*(soma+indexres-1) = somapedaco[0];
 		}else{
 			if(indexN1 < 0 && indexN2 >=0) {
-				somapedaco = somaEach('0',*(num2+indexN2),*(soma+indexSaida));
-				*(soma+indexSaida) = somapedaco[1];
-				*(soma+indexSaida-1) = somapedaco[0];
+				somapedaco = somaEach('0',*(num2+indexN2),*(soma+indexres));
+				*(soma+indexres) = somapedaco[1];
+				*(soma+indexres-1) = somapedaco[0];
 			}else{
 				if(indexN2 < 0 && indexN1 >=0) {
-					somapedaco = somaEach('0',*(num1+indexN1),*(soma+indexSaida));
-					*(soma+indexSaida) = somapedaco[1];
-					*(soma+indexSaida-1) = somapedaco[0];
+					somapedaco = somaEach('0',*(num1+indexN1),*(soma+indexres));
+					*(soma+indexres) = somapedaco[1];
+					*(soma+indexres-1) = somapedaco[0];
 				}
 			}
 		}
@@ -89,57 +89,77 @@ char *somai(char *num1, char *num2) {
 	return soma;
 }
 
-char *multiSmart(char *num1, char *num2){
-	int lenNum1 = strlen(num1);
-	int lenNum2 = strlen(num2);
-	int indexNum2,indexNum1,indexSaida;
-	int tamanho = lenNum1 + lenNum2;
-	int tamTmp = tamanho;
-	char *saida, *pedaco, *tmp, *somaAnterior;
+/*** 
+ *  两数相乘
+ *
+ *  @auther RobinLu
+ *
+ *  @param:
+ *      lenNum1:存放第二个数的字符串的地址
+ *      lenNum2:存放第二个数的字符串的地址
+ *      num1:存放第一个数的字符串的地址
+ *      num2:存放第二个数的字符串的地址
+ *      result:存放运算结果的字符串的指针的地址
+ *
+ */
+void multiplication(int lenNum1,int lenNum2,char *num1, char *num2, char **result){
+	int indexNum2,indexNum1,indexres;
+	int totalLen = lenNum1 + lenNum2;
+	int length = totalLen;
+	char *res, *doubleNum, *tmp, *p;
 
-	saida = malloc((tamanho+1) * sizeof(char));
-	memset(saida,'0',(tamanho+1));
-	*(saida+tamanho) = '\0';
+    // 为结果申请存储空间
+	res = malloc((totalLen+1) * sizeof(char));
+	memset(res,'0',(totalLen+1));
+	*(res+totalLen) = '\0';
 
-	tmp = malloc((tamanho+1) * sizeof(char));
-	memset(tmp,'0',(tamanho+1));
-	*(tmp+tamanho) = '\0';
+    // 为临时空间申请存储空间
+	tmp = malloc((totalLen+1) * sizeof(char));
+	memset(tmp,'0',(totalLen+1));
+	*(tmp+totalLen) = '\0';
 
+    // 遍历两个数使num1的每一位与num2的每一位相乘
 	for(indexNum2=lenNum2-1;indexNum2>=0;indexNum2--) {
-		for(indexNum1=lenNum1-1,indexSaida=tamanho-1;indexNum1>=0;indexNum1--,indexSaida--) {
-			pedaco = multiEach(*(num1+indexNum1),*(num2+indexNum2),*(tmp+indexSaida));
-			*(tmp+indexSaida) = pedaco[1];
-			*(tmp+indexSaida-1) = pedaco[0];
+		for(indexNum1=lenNum1-1,indexres=totalLen-1;indexNum1>=0;indexNum1--,indexres--) {
+			doubleNum = multiEach(*(num1+indexNum1),*(num2+indexNum2),*(tmp+indexres));
+			*(tmp+indexres) = doubleNum[1];
+			*(tmp+indexres-1) = doubleNum[0];
 		}
-		somaAnterior = saida;
-		saida = somai(tmp,saida);
-		free(somaAnterior);
-		memset(tmp,'0',(tamTmp+1));
-		*(tmp+tamTmp) = '\0';
-		tamanho--;
+		p = res;
+        // 将tmp加到结果上
+		res = add(tmp,res);
+        // free掉之前的res
+		free(p);
+        // 将tmp置零并计算下一位
+		memset(tmp,'0',(length+1));
+		*(tmp+length) = '\0';
+		totalLen--;
 	}
-	free(tmp);free(num1);free(num2);
-	return normalizar(saida);
+	free(tmp);
+    free(num1);
+    free(num2);
+	*result = sub0(res);
 }
 
 char *multi(char *num1, char *num2) {
-	char *saida;
-	int j,i=1,valor = 0;
+	char *res;
+	int j, i=1, valor = 0;
 	int lenNum2 = strlen(num2);
 
 	for(lenNum2 = lenNum2 - 1; lenNum2 >= 0; lenNum2--, i = i * 10)
 		valor = valor + i * (*(num2+lenNum2) - '0');
 
-	saida = num1;
+	res = num1;
 	for(j=2;j<=valor;j++)
-		saida = somai(saida,num1);
+		res = add(res,num1);
 
-	return saida;
+	return res;
 }
 
 void main() {
-	char *result,*num1,*num2,c;
-    int lenth = 0;
+	char *result,*num1,*num2;
+    char c;
+    int lenth = 0,lenNum1,lenNum2;
     // 小数点位置
     int num1DecimalMark = 0;
     int num2DecimalMark = 0;
@@ -156,7 +176,7 @@ void main() {
 	}
 
     // 输入第一个数
-	printf("Enter Number1: ");
+	printf("\nEnter Number1: ");
     while ((c = getchar()) != '\n') {
         if (c == '.') {
             // 输入了两个小数点
@@ -173,11 +193,12 @@ void main() {
         }
     }
     num1[lenth] = '\0';
+    lenNum1 = lenth;
     num1DecimalMark = num1DecimalMark==0 ? 0 : (lenth - num1DecimalMark);
 
 	// 输入第二个数
     lenth = 0;
-	printf("Enter Number2: ");
+	printf("\nEnter Number2: ");
     while ((c = getchar()) != '\n') {
         if (c == '.') {
             // 输入了两个小数点
@@ -194,6 +215,7 @@ void main() {
         }
     }
     num2[lenth] = '\0';
+    lenNum2 = lenth;
     num2DecimalMark = num2DecimalMark==0 ? 0 : (lenth - num2DecimalMark);
 
     // 记录小数点位置
@@ -204,10 +226,10 @@ void main() {
 	num2 = realloc(num2,(strlen(num2)+1) * sizeof(char));
 
     // 进行计算
-	result = multiSmart(num1,num2);
+	multiplication(lenNum1,lenNum2,num1,num2,&result);
 
     // 输出结果
-	printf("\nResult: \n");
+	printf("\nResult:        ");
     lenth = 0;
     int reslen = strlen(result);
     while (result[lenth] != '\0') {
@@ -216,14 +238,13 @@ void main() {
             printf(".");
         }
         // 每行显示200位数字
-        if (lenth % 120 == 0 && lenth != 0) {
-            printf("\n");
+        if (lenth % 80 == 0 && lenth != 0) {
+            printf("\n               ");
         }
         // 输出数字
         printf("%c", result[lenth]);
         lenth ++;
     }
-    printf("\n");
-
+    printf("\n\n");
 	system("pause");
 }
