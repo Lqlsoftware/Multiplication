@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <malloc.h>
-#define LEN 100000
+#define MAXNUMLEN 100000
 
 char *normalizar(char *valor) {
 	//cortando zeros a esquerda;
@@ -137,34 +137,93 @@ char *multi(char *num1, char *num2) {
 	return saida;
 }
 
-int main(int argc, char **argv) {
-	char *resultado,*num1,*num2;
-	struct mallinfo after;
+void main() {
+	char *result,*num1,*num2,c;
+    int lenth = 0;
+    // 小数点位置
+    int num1DecimalMark = 0;
+    int num2DecimalMark = 0;
+    int DecimalMark = 0;
 
-	num1 = malloc(LEN * sizeof(char));
-	num2 = malloc(LEN * sizeof(char));
+    // 申请存储输入数字的内存
+	num1 = malloc(MAXNUMLEN * sizeof(char));
+	num2 = malloc(MAXNUMLEN * sizeof(char));
 
-	if(num1 == 0 || num2 == 0) {
-		printf("\nMemória insuficiente.\n");
-		return EXIT_FAILURE;
+	if(num1 == NULL || num2 == NULL) {
+		printf("Memory Insuficiente\n");
+        system("pause");
+		exit(0);
 	}
 
-	printf("Entre com um valor inteiro: ");
-	scanf("%s",num1);
-	printf("\nEntre com outro um valor inteiro: ");
-	scanf("%s",num2);
+    // 输入第一个数
+	printf("Enter Number1: ");
+    while ((c = getchar()) != '\n') {
+        if (c == '.') {
+            // 输入了两个小数点
+            if (num1DecimalMark != 0) {
+                printf("Input Error!\n");
+                system("pause");
+		        exit(0);
+            } else {
+                num1DecimalMark = lenth;
+            }
+        } else {
+            num1[lenth] = c;
+            lenth ++;
+        }
+    }
+    num1[lenth] = '\0';
+    num1DecimalMark = num1DecimalMark==0 ? 0 : (lenth - num1DecimalMark);
 
-	num1 = realloc(num1,(strlen(num1)+1) * sizeof(char)); //otimizando uso da memoria
-	num2 = realloc(num2,(strlen(num2)+1) * sizeof(char)); //otimizando uso da memoria
+	// 输入第二个数
+    lenth = 0;
+	printf("Enter Number2: ");
+    while ((c = getchar()) != '\n') {
+        if (c == '.') {
+            // 输入了两个小数点
+            if (num2DecimalMark != 0) {
+                printf("Input Error!\n");
+                system("pause");
+		        exit(0);
+            } else {
+                num2DecimalMark = lenth;
+            }
+        } else {
+            num2[lenth] = c;
+            lenth ++;
+        }
+    }
+    num2[lenth] = '\0';
+    num2DecimalMark = num2DecimalMark==0 ? 0 : (lenth - num2DecimalMark);
 
-	resultado = multiSmart(num1,num2);
-	after = mallinfo();
+    // 记录小数点位置
+    DecimalMark = num1DecimalMark + num2DecimalMark;
 
-	printf("\nsaida: %s",resultado);
-	printf("\n\n************************************************\nESTATÍSTICAS DE MEMÓRIA:");
-	printf("\nMemoria total usada: %d bytes",after.uordblks);
-	printf("\nMemoria requisitada mas liberada em tempo de execução: %d bytes",after.fordblks);
-	printf("\n************************************************\n");
+    // 重新调整分配内存大小
+	num1 = realloc(num1,(strlen(num1)+1) * sizeof(char)); 
+	num2 = realloc(num2,(strlen(num2)+1) * sizeof(char));
 
-	return EXIT_SUCCESS;
+    // 进行计算
+	result = multiSmart(num1,num2);
+
+    // 输出结果
+	printf("\nResult: \n");
+    lenth = 0;
+    int reslen = strlen(result);
+    while (result[lenth] != '\0') {
+        // 输出小数点
+        if (lenth == reslen - DecimalMark) {
+            printf(".");
+        }
+        // 每行显示200位数字
+        if (lenth % 120 == 0 && lenth != 0) {
+            printf("\n");
+        }
+        // 输出数字
+        printf("%c", result[lenth]);
+        lenth ++;
+    }
+    printf("\n");
+
+	system("pause");
 }
