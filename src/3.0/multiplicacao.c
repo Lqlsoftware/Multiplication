@@ -27,11 +27,10 @@ char *multiEach(char n1, char n2, char n3) {
 		res[1] = ir + '0';
 		res[0] = '0';
 	}
-	//res é um array de dois elementos, ex: valor = 12, res = {'1','2'}
 	return res;
 }
 
-char *somaEach(char n1, char n2, char n3) {
+char *addEach(char n1, char n2, char n3) {
 	static char res[2];
 	int ir;
 
@@ -44,7 +43,6 @@ char *somaEach(char n1, char n2, char n3) {
 		res[1] = ir + '0';
 		res[0] = '0';
 	}
-	//res é um array de dois elementos, ex: valor = 12, res = {'1','2'}
 	return res;
 }
 
@@ -52,16 +50,16 @@ char *add(char *num1, char *num2) {
 	int totalLenMax,indexres,indexN1,indexN2;
 	int lenNum1 = strlen(num1);
 	int lenNum2 = strlen(num2);
-	char *soma, *somapedaco;
+	char *add, *addtmp;
 
 	if(lenNum1 > lenNum2) {
 		totalLenMax = lenNum1+2;
 	}else{
 		totalLenMax = lenNum2+2;
 	}
-	soma  = (char *) malloc((totalLenMax) * sizeof(char));
-	memset(soma,'0',(totalLenMax) * sizeof(char));
-	*(soma+totalLenMax-1) = '\0';
+	add  = (char *) malloc((totalLenMax) * sizeof(char));
+	memset(add,'0',(totalLenMax) * sizeof(char));
+	*(add+totalLenMax-1) = '\0';
 
 	indexres = totalLenMax-2;
 	indexN1 = lenNum1 -1;
@@ -69,28 +67,28 @@ char *add(char *num1, char *num2) {
 
 	for(;indexres >= 0;indexres--,indexN1--,indexN2--) {
 		if(indexN1 >= 0 && indexN2 >= 0) {
-			somapedaco = somaEach(*(num1+indexN1),*(num2+indexN2),*(soma+indexres));
-			*(soma+indexres) = somapedaco[1];
-			*(soma+indexres-1) = somapedaco[0];
+			addtmp = addEach(*(num1+indexN1),*(num2+indexN2),*(add+indexres));
+			*(add+indexres) = addtmp[1];
+			*(add+indexres-1) = addtmp[0];
 		}else{
 			if(indexN1 < 0 && indexN2 >=0) {
-				somapedaco = somaEach('0',*(num2+indexN2),*(soma+indexres));
-				*(soma+indexres) = somapedaco[1];
-				*(soma+indexres-1) = somapedaco[0];
+				addtmp = addEach('0',*(num2+indexN2),*(add+indexres));
+				*(add+indexres) = addtmp[1];
+				*(add+indexres-1) = addtmp[0];
 			}else{
 				if(indexN2 < 0 && indexN1 >=0) {
-					somapedaco = somaEach('0',*(num1+indexN1),*(soma+indexres));
-					*(soma+indexres) = somapedaco[1];
-					*(soma+indexres-1) = somapedaco[0];
+					addtmp = addEach('0',*(num1+indexN1),*(add+indexres));
+					*(add+indexres) = addtmp[1];
+					*(add+indexres-1) = addtmp[0];
 				}
 			}
 		}
 	}
-	return soma;
+	return add;
 }
 
 /*** 
- *  两数相乘
+ *  @description: 两数相乘
  *
  *  @auther RobinLu
  *
@@ -143,14 +141,14 @@ void multiplication(int lenNum1,int lenNum2,char *num1, char *num2, char **resul
 
 char *multi(char *num1, char *num2) {
 	char *res;
-	int j, i=1, valor = 0;
+	int j, i = 1, k = 0;
 	int lenNum2 = strlen(num2);
 
 	for(lenNum2 = lenNum2 - 1; lenNum2 >= 0; lenNum2--, i = i * 10)
-		valor = valor + i * (*(num2+lenNum2) - '0');
+		k = k + i * (*(num2+lenNum2) - '0');
 
 	res = num1;
-	for(j=2;j<=valor;j++)
+	for(j=2;j<=k;j++)
 		res = add(res,num1);
 
 	return res;
