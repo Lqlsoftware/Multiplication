@@ -7,9 +7,7 @@
 char *sub0(char *valor) {
 	//去除开头多余的0;
 	int i;
-
 	for(i=0;*(valor+i)=='0';i++);
-
 	return (valor + i);
 }
 
@@ -89,9 +87,6 @@ char *add(char *num1, char *num2) {
 
 /*** 
  *  @description: 两数相乘
- *
- *  @auther RobinLu
- *
  *  @param:
  *      lenNum1:存放第二个数的字符串的地址
  *      lenNum2:存放第二个数的字符串的地址
@@ -146,11 +141,9 @@ char *multi(char *num1, char *num2) {
 
 	for(lenNum2 = lenNum2 - 1; lenNum2 >= 0; lenNum2--, i = i * 10)
 		k = k + i * (*(num2+lenNum2) - '0');
-
 	res = num1;
 	for(j=2;j<=k;j++)
 		res = add(res,num1);
-
 	return res;
 }
 
@@ -250,5 +243,4 @@ void main() {
         lenth ++;
     }
     printf("\n\n");
-	system("pause");
 }
