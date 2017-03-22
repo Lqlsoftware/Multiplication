@@ -1,0 +1,20 @@
+/** 函数:任意大数相乘
+ *  @auther RobinLu
+ *  @name: multiplication  
+ *  @return: int 结果小数点的位置 
+ *  @param:
+ *      int     lenNum1            存放第二个数的字符串的地址
+ *      int     lenNum2            存放第二个数的字符串的地址
+ *      char*   num1               存放第一个数的字符串的地址
+ *      char*   num2               存放第二个数的字符串的地址
+ *      int     num1DecimalMark    第一个数小数点的位置
+ *      int     num2DecimalMark    第二个数小数点的位置
+ *      char**  result             存放运算结果的字符串的首地址的指针的地址
+ *  @description:
+ *      DecimalMark = 第一个数字到小数点的距离 (DecimalMark.exist)
+ *                    0                      (DecimalMark.notExist)
+ *  @include:
+ *      string.h
+ *      malloc.h
+ *
+ */
