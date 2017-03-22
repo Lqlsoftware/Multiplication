@@ -16,9 +16,9 @@ char *sub0(char *valor) {
 char *multiEach(char n1, char n2, char n3) {
 	static char res[2];
 	int ir;
-
+	// 一位相乘并与之前的进位求和
 	ir = ((n1 - '0') * (n2 - '0')) + (n3 - '0');
-
+	// 进位
 	if(ir > 9) {
 		res[1] = (ir % 10) + '0';
 		res[0] = (ir / 10) + '0';
@@ -32,9 +32,9 @@ char *multiEach(char n1, char n2, char n3) {
 char *addEach(char n1, char n2, char n3) {
 	static char res[2];
 	int ir;
-
+	// 一位相加与之前的进位求和
 	ir = (n1 - '0') + (n2 - '0') + (n3 - '0');
-
+	// 进位
 	if(ir > 9) {
 		res[1] = (ir % 10) + '0';
 		res[0] = (ir / 10) + '0';
@@ -50,20 +50,18 @@ char *add(char *num1, char *num2) {
 	int lenNum1 = strlen(num1);
 	int lenNum2 = strlen(num2);
 	char *add, *addtmp;
-
-	if(lenNum1 > lenNum2) {
+	// 申请存储运算结果的空间
+	if(lenNum1 > lenNum2)
 		totalLenMax = lenNum1+2;
-	}else{
+	else
 		totalLenMax = lenNum2+2;
-	}
-	add  = (char *) malloc((totalLenMax) * sizeof(char));
+	add = (char *) malloc((totalLenMax) * sizeof(char));
 	memset(add,'0',(totalLenMax) * sizeof(char));
 	*(add+totalLenMax-1) = '\0';
-
 	indexres = totalLenMax-2;
 	indexN1 = lenNum1 -1;
 	indexN2 = lenNum2 -1;
-
+	// 进位相加
 	for(;indexres >= 0;indexres--,indexN1--,indexN2--) {
 		if(indexN1 >= 0 && indexN2 >= 0) {
 			addtmp = addEach(*(num1+indexN1),*(num2+indexN2),*(add+indexres));
@@ -120,26 +118,12 @@ int multiplication(int lenNum1,int lenNum2,char *num1,char *num2,int num1Decimal
 		*(tmp+length) = '\0';
 		totalLen--;
 	}
+	// free掉申请的空间
 	free(tmp);
     free(num1);
     free(num2);
     *result = sub0(res);
     return DecimalMark;
-}
-
-char *multi(char *num1, char *num2) {
-	char *res;
-	int j, i = 1, k = 0;
-	int lenNum2 = strlen(num2);
-
-	for(lenNum2 = lenNum2 - 1; lenNum2 >= 0; lenNum2--, i = i * 10)
-		k = k + i * (*(num2+lenNum2) - '0');
-
-	res = num1;
-	for(j=2;j<=k;j++)
-		res = add(res,num1);
-
-	return res;
 }
 
 void main() {
