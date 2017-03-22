@@ -7,10 +7,11 @@
 char *sub0(char *valor) {
 	//去除开头多余的0;
 	int i;
+
 	for(i=0;*(valor+i)=='0';i++);
+
 	return (valor + i);
 }
-
 
 char *multiEach(char n1, char n2, char n3) {
 	static char res[2];
@@ -85,20 +86,11 @@ char *add(char *num1, char *num2) {
 	return add;
 }
 
-/*** 
- *  @description: 两数相乘
- *  @param:
- *      lenNum1:存放第二个数的字符串的地址
- *      lenNum2:存放第二个数的字符串的地址
- *      num1:存放第一个数的字符串的地址
- *      num2:存放第二个数的字符串的地址
- *      result:存放运算结果的字符串的指针的地址
- *
- */
-void multiplication(int lenNum1,int lenNum2,char *num1, char *num2, char **result){
+int multiplication(int lenNum1,int lenNum2,char *num1,char *num2,int num1DecimalMark,int num2DecimalMark,char **result){
 	int indexNum2,indexNum1,indexres;
 	int totalLen = lenNum1 + lenNum2;
 	int length = totalLen;
+    int DecimalMark = (num1DecimalMark==0 ? 0 : (lenNum1 - num1DecimalMark)) + (num2DecimalMark==0 ? 0 : (lenNum2 - num2DecimalMark));
 	char *res, *doubleNum, *tmp, *p;
 
     // 为结果申请存储空间
@@ -131,7 +123,8 @@ void multiplication(int lenNum1,int lenNum2,char *num1, char *num2, char **resul
 	free(tmp);
     free(num1);
     free(num2);
-	*result = sub0(res);
+    *result = sub0(res);
+    return DecimalMark;
 }
 
 char *multi(char *num1, char *num2) {
@@ -141,9 +134,11 @@ char *multi(char *num1, char *num2) {
 
 	for(lenNum2 = lenNum2 - 1; lenNum2 >= 0; lenNum2--, i = i * 10)
 		k = k + i * (*(num2+lenNum2) - '0');
+
 	res = num1;
 	for(j=2;j<=k;j++)
 		res = add(res,num1);
+
 	return res;
 }
 
@@ -178,14 +173,19 @@ void main() {
             } else {
                 num1DecimalMark = lenth;
             }
-        } else {
+        } 
+        else if (c-'0'<0 || c-'0'>10) {
+			printf("Input Error!\n");
+            system("pause");
+		    exit(0);
+		}
+        else {
             num1[lenth] = c;
             lenth ++;
         }
     }
     num1[lenth] = '\0';
     lenNum1 = lenth;
-    num1DecimalMark = num1DecimalMark==0 ? 0 : (lenth - num1DecimalMark);
 
 	// 输入第二个数
     lenth = 0;
@@ -213,17 +213,13 @@ void main() {
     }
     num2[lenth] = '\0';
     lenNum2 = lenth;
-    num2DecimalMark = num2DecimalMark==0 ? 0 : (lenth - num2DecimalMark);
-
-    // 记录小数点位置
-    DecimalMark = num1DecimalMark + num2DecimalMark;
 
     // 重新调整分配内存大小
 	num1 = realloc(num1,(strlen(num1)+1) * sizeof(char)); 
 	num2 = realloc(num2,(strlen(num2)+1) * sizeof(char));
 
     // 进行计算
-	multiplication(lenNum1,lenNum2,num1,num2,&result);
+	DecimalMark = multiplication(lenNum1,lenNum2,num1,num2,num1DecimalMark,num2DecimalMark,&result);
 
     // 输出结果
 	printf("\nResult:        ");
@@ -243,4 +239,5 @@ void main() {
         lenth ++;
     }
     printf("\n\n");
+	system("pause");
 }
